@@ -1,0 +1,44 @@
+CACHE MANIFEST
+# v1.1 - 2020-01-20
+# This causes this webapp to be cached and usable
+# without a network connection.
+
+CACHE:
+index.html
+artwork/logo.png
+libs/pako/pako_inflate.min.js
+libs/threejs/OBJLoader.js
+libs/threejs/VREffect.js
+libs/threejs/three.min.js
+libs/webvr-polyfill/webvr-polyfill.min.js
+libs/gaze-interaction/gaze-interaction.js
+libs/gaze-interaction/gaze-viewpoint.js
+js/gcode.js
+js/model.js
+js/scene.js
+js/io.js
+js/props.js
+js/filament.js
+js/printer.js
+sounds/click.ogg
+models/reel.obj.gz
+models/printer-body.obj.gz
+models/printer-axis.obj.gz
+models/brain.gcode.gz
+models/frame.obj.gz
+models/bench.obj.gz
+models/printer-bed.obj.gz
+models/printer-head.obj.gz
+models/monitor.obj.gz
+textures/touch_panel.jpg
+textures/filament.png
+textures/pc_face.png
+textures/pc_side_emissive.png
+textures/pc_face_emissive.png
+textures/printer_front_panel.png
+textures/printer_side_panel.png
+textures/brushed_metal.jpg
+textures/photograph.png
+
+NETWORK:
+*

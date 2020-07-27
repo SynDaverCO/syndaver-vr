@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html manifest="syndaver-vr.appcache">
+    <head>
+        <title>SynDaver Virtual Experience</title>
+        <meta name="Description" content="Interact with a SynDaver 3D printer in VR!">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+        <link href="artwork/icon_192px.png"        rel="icon" sizes="192x192" />
+        <link href="artwork/icon_128px.png"        rel="icon" sizes="128x128" />
+        <link href="artwork/icon_180px.png"        rel="apple-touch-icon" />
+        <meta name="mobile-web-app-capable"        content="yes">
+        <meta name="apple-mobile-web-app-capable"  content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta property="og:url"                    content="https://SynDaverCO.github.io/vr" />
+        <meta property="og:type"                   content="article" />
+        <meta property="og:title"                  content="SynDaver Virtual Experience" />
+        <meta property="og:description"            content="Interact with a SynDaver AXI 3D printer in VR!" />
+        <meta property="og:image"                  content="https://SynDaverCO.github.io/vr/artwork/screenshot.png" />
+        <meta property="og:image:url"              content="https://SynDaverCO.github.io/vr/artwork/screenshot.png" />
+        <meta property="og:image:type"             content="image/png" />
+        <meta property="og:image:width"            content="1200" />
+        <meta property="og:image:height"           content="630" />
+        <script>
+            /**
+             *
+             * @licstart
+             *
+             * Copyright (C) 2017  AlephObjects, Inc.
+             * Copyright (C) 2020  SynDaver Labs, Inc.
+             *
+             * The JavaScript code in this page is free software: you can
+             * redistribute it and/or modify it under the terms of the GNU Affero
+             * General Public License (GNU AGPL) as published by the Free Software
+             * Foundation, either version 3 of the License, or (at your option)
+             * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+             * without even the implied warranty of MERCHANTABILITY or FITNESS
+             * FOR A PARTICULAR PURPOSE.  See the GNU AGPL for more details.
+             *
+             * As additional permission under GNU AGPL version 3 section 7, you
+             * may distribute non-source (e.g., minimized or compacted) forms of
+             * that code without the copy of the GNU AGPL normally required by
+             * section 4, provided you include this license notice and a URL
+             * through which recipients can access the Corresponding Source.
+             *
+             * @licend
+             *
+             */
+        </script>
+        <style>
+            body, html {
+                position:   absolute;
+                top:        0;
+                left:       0;
+                right:      0;
+                bottom:     0;
+
+                margin:     0;
+                padding:    0;
+
+                width:      100%;
+                height:     100%;
+                overflow:   hidden;
+
+                -webkit-user-select: none;
+                -moz-user-select:    none;
+                -ms-user-select:     none;
+                user-select:         none;
+            }
+
+            canvas {
+                position:   absolute;
+                width:      100%;
+                height:     100%;
+                top:        0;
+                background-color: 0xB1E1F7;
+                cursor:     grab;
+            }
+
+            #buttons {
+                position:   absolute;
+                right:      1em;
+                top:        1em;
+            }
+            
+            #loading, #about, #help {
+                font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            }
+            
+            #loading, #about {
+                background: LightGoldenRodYellow;
+            }
+            
+            #help {
+                background: #002E62; /* SynDaver Blue */
+                color: white;
+                border: 1px solid black;
+            }
+            
+            button {
+                background-color: #96172E; /* SynDaver Red */
+                border-radius:4px;
+                border: 1px solid #854629;
+                color: white;
+                padding: 0.25em 0.5em;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                cursor: pointer;
+                box-shadow: 0px 0px 5px #FFFFFF;
+            }
+
+            strong, h1 {
+                font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
+                margin: 0 0;
+                margin-bottom: 1vw;
+            }
+
+            #loading {
+                position:   absolute;
+                top:        0;
+                left:       0;
+                right:      0;
+                bottom:     0;
+
+                text-align: center;
+                font-size:  3vh;
+            }
+
+            #loading img {
+                //height: 40%;
+                margin: 1em;
+            }
+
+            #about img {
+                width:    10em;
+                position: absolute;
+                left:     2vw;
+                top:      2vw;
+            }
+
+            #about {
+                display:  none;
+                position: absolute;
+                left:     3em;
+                top:      3em;
+                right:    3em;
+                bottom:   3em;
+
+                padding-left: 14em;
+                padding-right: 3em;
+            }
+
+            #about #text {
+                height: 100%;
+                overflow: auto;
+            }
+
+            #about table {
+                margin: 1em;
+            }
+
+            #help {
+                position:    absolute;
+                left:        1em;
+                bottom:      1em;
+                margin-right: 1em;
+                line-height: 1.5;
+            }
+
+            #help SPAN {
+                color: white;
+            }
+
+            #help button {
+                margin-left: 2em;
+            }
+
+            .box {
+                color: #002e62;
+                border: 1px solid #002e62;
+                padding: 1.5vw;
+                box-shadow: 5px 5px 10px #222222;
+            }
+
+            .close-box::after {
+                content:            "\002716";
+                position:           absolute;
+                top:                1vw;
+                right:              1.5vw;
+                font-size:          150%;
+            }
+
+            .valign {
+                display:         flex;
+                justify-content: center;
+                align-items:     center;
+                flex-direction:  column;
+            }
+
+            .float-right {
+                float: right;
+            }
+        </style>
+    </head>
+    <body onload="onLoad()">
+        <script>
+            WebVRConfig = {
+                ALWAYS_APPEND_POLYFILL_DISPLAY: true,
+                BUFFER_SCALE: (window.location.hash == "#low") ? 0.5 : 1.0
+            };
+        </script>
+        <canvas id="webgl"></canvas>
+        <div id="buttons">
+            <button id="aboutbtn" onclick="showAbout()">About</button>
+            <button id="fullscreen">Fullscreen</button>
+            <button id="enter_vr">Enter VR</button>
+        </div>
+        <div id="help" class="box">
+            <table>
+                <tr>
+                    <td id="hintText">
+                        Click and drag to look around!<br>Look left, right and down!
+                    </td>
+                    <td>
+                        <button id="hintBtn" onclick="nextHint();">Next</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="loading" class="valign">
+            <img src="artwork/logo.png">
+            <strong>Please wait while we<br>assemble your SynDaver 3D printer</strong>
+            <span id="downloadProgress"></span>
+        </div>
+        <div id="about" class="box close-box" onclick="hideAbout()">
+            <a href="www.syndaver.com"><img src="artwork/logo.png"></a>
+            <div id="text">
+                <h1>SynDaver Virtual Experience V1.2</h1>
+                <p>
+                    Copyright &copy; 2020 SynDaver Labs, Inc.<br>
+                    Copyright &copy; 2017 AlephObjects, Inc.
+                </p>
+                <p>
+                    This software is licensed under the <a href="COPYING">Affero GPL license</a>
+                    (<a href="https://github.com/SynDaverCO/syndaver-vr">Source Code</a>)
+                </p>
+                <p>
+                Inspired by John Ostrander and Timothy W. Simpson, the Paul Morrow Professor of Engineering Design and Manufacturing and Co-Director, at the Center for Innovative Materials Processing through Direct Digital Deposition (CIMP-3D) at The Pennsylvania State University. Learn more about their work online at <a href="http://www.cimp-3d.org/">www.cimp-3d.org</a>.
+                </p>
+                <p>
+                    Created with 100% free software and open standards:
+                    <ul>
+                        <li><a href="https://www.freecadweb.org/">FreeCAD</a>
+                        <li><a href="http://www.openscad.org/">OpenSCAD</a>
+                        <li><a href="http://www.meshlab.net/">MeshLab</a>
+                        <li><a href="https://www.gimp.org/">GIMP</a>
+                        <li><a href="http://www.scintilla.org/SciTE.html">SciTE</a>
+                        <li><a href="http://www.vorbis.com/">Ogg Vorbis</a>
+                        <li><a href="https://webvr.info/">WebVR</a>
+                    </ul>
+                </p>
+                <p>
+                    Created with 100% free libraries and code:
+
+                    <table id="jslicense-labels1">
+                        <tr>
+                            <td><a href="libs/webvr-polyfill/webvr-polyfill.min.js">webvr-polyfill.min.js</a></td>
+                            <td><a href="licenses/LICENSE-webvr-polyfill.txt">MIT</a></td>
+                            <td><a href="https://github.com/googlevr/webvr-polyfill">Source</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="libs/threejs/three.min.js">three.min.js</a></td>
+                            <td><a href="licenses/LICENSE-threejs.txt">MIT</a></td>
+                            <td><a href="https://github.com/mrdoob/three.js/">Source</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="libs/pako/pako_inflate.min.js">pako_inflate.min.js</a></td>
+                            <td><a href="licenses/LICENSE-pako.txt">MIT</a></td>
+                            <td><a href="https://github.com/nodeca/pako/">Source</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="libs/gaze-interaction/gaze-interaction.js">gaze-interaction.js</a></td>
+                            <td><a href="licenses/LICENSE-gaze-interaction.txt">AGPL</a></td>
+                            <td><a href="https://github.com/marciot/gaze-interaction">Source</a></td>
+                        </tr>
+                    </table>
+                </p>
+                <p>
+                    Includes the following free graphic and sound assets:
+
+                    <ul>
+                        <li><a href="https://www.thingiverse.com/thing:2852778">My Brain</a> by mluongo91 - CC BY 3.0
+                        <li><a href="https://flic.kr/p/8cvtZ4/">Brushed Metal Texture</a> by webtreats - CC BY 2.0
+                        <li>Click sound by <a href="https://www.freesound.org/people/lebcraftlp/sounds/192273/">lebcraftlp</a> - CC BY-SA 3.0
+                    </ul>
+                </p>
+            </div>
+        </div>
+        <script>
+            function showAbout() {
+                document.getElementById("about").style.display = "block";
+            }
+            function hideAbout() {
+                document.getElementById("about").style.display = "none";
+            }
+            function nextHint() {
+                if( typeof nextHint.which == 'undefined' ) {
+                    nextHint.which = -1;
+                }
+                nextHint.which++;
+                switch(nextHint.which) {
+                    case 0:
+                        document.getElementById("hintText").innerHTML = "Find the white dots (<span>&#9679;</span>) to interact with objects.<br>Push the red button to your left to start a print!";
+                        break;
+                    case 1:
+                        document.getElementById("hintText").innerHTML = "Use the lava lamp to adjust the print speed;<br>Use the filament reels to change colors!";
+                        break;
+                    case 2:
+                        document.getElementById("hintText").innerHTML = "SPACE to cycle through viewpoints; scroll wheel zooms. <br>W, A, S, D, PageUp or PageDown to fly around!";
+                        document.getElementById("hintBtn").innerText = "Close";
+                        document.getElementById("hintBtn").onclick = hideHint;
+                        break;
+                }
+            }
+            function hideHint() {
+                document.getElementById("help").style.display = "none";
+            }
+        </script>
+        <script src="libs/pako/pako_inflate.min.js"></script>
+        <script src="libs/webvr-polyfill/webvr-polyfill.min.js"></script>
+        <script src="libs/threejs/three.min.js"></script>
+        <script src="libs/threejs/OBJLoader.js"></script>
+        <script src="libs/threejs/VREffect.js"></script>
+        <script src="libs/gaze-interaction/gaze-interaction.js"></script>
+        <script src="libs/gaze-interaction/gaze-viewpoint.js"></script>
+        <script src="js/io.js"></script>
+        <script src="js/gcode.js"></script>
+        <script src="js/model.js"></script>
+        <script src="js/printer.js"></script>
+        <script src="js/filament.js"></script>
+        <script src="js/props.js"></script>
+        <script src="js/skydome.js"></script>
+        <script src="js/scene.js"></script>
+    </body>
+</html>

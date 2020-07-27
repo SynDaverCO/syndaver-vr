@@ -1,0 +1,109 @@
+<html>
+    <head>
+        <title>WebVR Polyfill Debugging</title>
+    </head>
+    <body>
+        <script>
+        /**
+        *
+        * @licstart
+        *
+        * Copyright (C) 2017  AlephObjects, Inc.
+        *
+        *
+        * The JavaScript code in this page is free software: you can
+        * redistribute it and/or modify it under the terms of the GNU Affero
+        * General Public License (GNU AGPL) as published by the Free Software
+        * Foundation, either version 3 of the License, or (at your option)
+        * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+        * without even the implied warranty of MERCHANTABILITY or FITNESS
+        * FOR A PARTICULAR PURPOSE.  See the GNU AGPL for more details.
+        *
+        * As additional permission under GNU AGPL version 3 section 7, you
+        * may distribute non-source (e.g., minimized or compacted) forms of
+        * that code without the copy of the GNU AGPL normally required by
+        * section 4, provided you include this license notice and a URL
+        * through which recipients can access the Corresponding Source.
+        *
+        * @licend
+        *
+        */
+        </script>
+        <script src="../libs/webvr-polyfill/webvr-polyfill.min.js"></script>
+        <script>
+            WebVRConfig = {
+                ALWAYS_APPEND_POLYFILL_DISPLAY: true
+            };
+        </script>
+
+        <h1>Page for troubleshooting WebVR Polyfill</h1>
+        <p>
+        Does this link work?
+        <a href="http://googlevr.github.io/webvr-polyfill/examples/basic/">WebGL Example</a>
+        </p>
+        <h2>Device information:</h2>
+        <p id="log"></p>
+
+        <script>
+            var el = document.getElementById("log");
+                function log(str) {
+                el.innerHTML += str + "<br>";
+            }
+
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            log("userAgent: " + userAgent);
+
+            if(navigator.getVRDisplays) {
+                navigator.getVRDisplays().then(
+                    function (displays) {
+                        log("dpdb: number of displays: " + displays.length);
+                        if(displays[0].dpdb_) {
+                            log("dpdb: " + JSON.stringify(displays[0].dpdb_.deviceParams));
+                        } else {
+                            log("dpdb: dpdb_[0] is undefined");
+                        }
+                    }
+                );
+            } else {
+                log("dpdb: navigator.getVRDisplays is undefined");
+            }
+        </script>
+
+        <h2>Bezel calculator</h2>
+        <p>
+        This helps compute the bezel width according to https://github.com/WebVRRocks/webvr-polyfill-dpdb:
+        </p>
+        deviceHeight    (mm): <input id="deviceHeight"   type="text"><br>
+        deviceWidth     (mm): <input id="deviceWidth"   type="text"><br>
+        screenHeight    (mm): <input id="screenHeight"   type="text"><br>
+        screenWidth     (mm): <input id="screenWidth"    type="text"><br>
+        screenDiagonal  (mm): <input id="screenDiagonal" type="text"><br>
+        screenVertRes   (px): <input id="screenVertRes"   type="text"><br>
+        screenHorzRes   (px): <input id="screenHorzRes"   type="text"><br>
+        <button onClick="computeValues()">Calculate</button><br>
+        bezelWidth (mm):      <input id="bezelWidth" type="text"><br>
+        dpiVertical (ppi):    <input id="vertDpi" type="text"><br>
+        dpiHorizontal (ppi):  <input id="horzDpi" type="text"><br>
+        <script>
+            function computeValues() {
+                const mmPerInch = 25.4;
+                var deviceHeight    = parseFloat(document.getElementById("deviceHeight").value);
+                var deviceWidth     = parseFloat(document.getElementById("deviceWidth").value);
+                var screenDiagonal  = parseFloat(document.getElementById("screenDiagonal").value);
+                var screenHeight    = parseFloat(document.getElementById("screenHeight").value);
+                var screenWidth     = parseFloat(document.getElementById("screenWidth").value);
+                var screenVertRes   = parseFloat(document.getElementById("screenVertRes").value);
+                var screenHorzRes   = parseFloat(document.getElementById("screenHorzRes").value);
+                var ratio           = screenWidth/screenHeight;
+
+                var bezelWidth = (deviceWidth - Math.sqrt((screenDiagonal * screenDiagonal) / (1 + (1 / (ratio * ratio))))) / 2;
+                document.getElementById("bezelWidth").value = bezelWidth;
+
+                var dpiVertical   = screenVertRes / (screenHeight / mmPerInch);
+                var dpiHorizontal = screenHorzRes / (screenWidth  / mmPerInch);
+                document.getElementById("vertDpi").value = dpiVertical;
+                document.getElementById("horzDpi").value = dpiHorizontal;
+            }
+        </script>
+    </body>
+</html>
